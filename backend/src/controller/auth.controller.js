@@ -14,7 +14,7 @@ export const signup = async (req, res) => {
     // Plan to add sanitization
 
     // Check if username is taken
-    const userNameTaken = User.isUsernameTaken(username);
+    const userNameTaken = await User.isUsernameTaken(username);
     if (userNameTaken) {
       return res
         .status(400)
@@ -28,8 +28,8 @@ export const signup = async (req, res) => {
       });
     }
 
-    const salt = bcrypt.genSaltSync(12);
-    const hashedPassword = bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSaltSync(12);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = await User.createUser({
       username: username,
@@ -90,7 +90,7 @@ export const login = async (req, res) => {
     if (!isPasswordMatch) {
       return res.status(401).json({
         success: false,
-        message: "Invalid password",
+        message: "Invalid password or username",
       });
     }
 
@@ -117,4 +117,25 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = (req, res) => {};
+export const logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Logout successful",
+    });
+  } catch (error) {
+    console.error("DEBUGGING Logout error:", error.stack);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while logging out",
+      error: error.message,
+    });
+  }
+};
