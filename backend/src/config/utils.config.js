@@ -21,6 +21,7 @@ export const generateToken = (user, res) => {
       httpOnly: true,
       secure: isProduction,
       sameSite: "strict",
+      path: "/",
     });
 
     return token;
