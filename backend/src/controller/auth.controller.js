@@ -1,5 +1,5 @@
 import { User } from "../model/auth.model.js";
-// import { generateToken } from "./../config/utils.config.js";
+import { generateToken } from "./../config/utils.config.js";
 
 export const signup = async (req, res) => {
   const { username, password, lastName, firstName, middleInitial } = req.body;
@@ -41,7 +41,7 @@ export const signup = async (req, res) => {
 
     if (newUser) {
       // Generate JWT token WIP
-      //   const token = generateToken({});
+      const token = generateToken(newUser, res);
 
       // Respond with success message and user information and check if middle name exists
       const fullName = `${newUser.first_name} ${newUser.middle_name ? newUser.middle_name + " " : ""}${newUser.last_name}`;
