@@ -67,6 +67,54 @@ export const signup = async (req, res) => {
   }
 };
 
-export const login = (req, res) => {};
+export const login = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    if (!username || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    const user = await User.getUserByUsername(username);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid username or password",
+      });
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid password",
+      });
+    }
+
+    const token = generateToken(user, res);
+
+    const fullName = `${user.first_name} ${user.middle_name ? user.middle_name + " " : ""}${user.last_name}`;
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token: token,
+      data: {
+        id: user.user_id,
+        fullName: fullName,
+      },
+    });
+  } catch (error) {
+    console.error("DEBUGGING Signup error:", error.stack);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while logging in",
+      error: error.message,
+    });
+  }
+};
 
 export const logout = (req, res) => {};
