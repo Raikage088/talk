@@ -12,13 +12,7 @@ export const db = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0,
 });
-// db.connect((err) => {
-//   if (err) {
-//     console.error("Error connecting to the database:", err.stack);
-//   } else {
-//     console.log("Connected to the database.");
-//   }
-// });
+
 db.getConnection((err, connection) => {
   if (err) {
     console.error("Error connecting to the database:", err.stack);
