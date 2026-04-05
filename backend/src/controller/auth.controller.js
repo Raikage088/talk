@@ -46,7 +46,7 @@ export const signup = async (req, res) => {
       const token = generateToken(newUser, res);
 
       // Respond with success message and user information and check if middle name exists
-      const fullName = `${newUser.first_name} ${newUser.middle_name ? newUser.middle_name + " " : ""}${newUser.last_name}`;
+      const fullName = `${newUser.firstName} ${newUser.middleInitial ? newUser.middleInitial + " " : ""}${newUser.lastName}`;
 
       return res.status(201).json({
         success: true,
@@ -98,7 +98,8 @@ export const login = async (req, res) => {
 
     const token = generateToken(user, res);
 
-    const fullName = `${user.first_name} ${user.middle_name ? user.middle_name + " " : ""}${user.last_name}`;
+    // Respond with success message and user information and check if middle name exists
+    const fullName = `${user.firstName} ${user.middleInitial ? user.middleInitial + " " : ""}${user.lastName}`;
 
     res.status(200).json({
       success: true,
