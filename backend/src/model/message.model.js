@@ -36,6 +36,7 @@ export const Message = {
       throw new Error(`Error fetching conversation: ${error.message}`);
     }
   },
+
   markedAsRead: async (receiverId, messageId) => {
     try {
       const mysql = `UPDATE message SET is_read = 1 WHERE receiver_id = ? AND message_id = ?`;
